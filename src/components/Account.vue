@@ -5,8 +5,11 @@
         </template>
         <template v-else>
         <v-container >
+            <v-btn fab color="primary" :to="{path: '/'}">
+                <v-icon>mdi-menu</v-icon>
+            </v-btn>
             <v-row justify="center" valign="center">
-                <v-col cols="6" md="4" lg="3" >
+                <v-col cols="6" md="4" lg="3" v-if="!kiltStore.account">
                     <v-card class="mx-auto" variant="outlined">
                         <v-card-item>
                             <div>

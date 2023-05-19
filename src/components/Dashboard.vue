@@ -21,8 +21,8 @@
                         </v-card-item>
 
                         <v-card-actions>
-                            <v-btn variant="outlined" :to="n.link">
-                                Button
+                            <v-btn icon="mdi-send" variant="outlined" color="primary" :to="n.link">
+                                
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -42,9 +42,9 @@ import { useAppStore } from '@/store/app'
 const appStore = useAppStore()
 const cards = ref([
         {
-            title: "Comms",
+            title: "Chat",
             subtitle: "DID communications",
-            text: "See your encrypted DID communications here",
+            text: "DID encrypted",
             link: "/comm",
         },
         {

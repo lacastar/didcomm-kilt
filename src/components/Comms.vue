@@ -5,25 +5,36 @@
         </template>
         <template v-else>
         <v-system-bar>
-            <v-spacer></v-spacer>
+            <v-btn fab color="primary" :to="{path: '/'}">
+                <v-icon>mdi-menu</v-icon>
+            </v-btn>
+            <!--<v-spacer></v-spacer>
 
             <v-icon>mdi-square</v-icon>
 
             <v-icon>mdi-circle</v-icon>
 
-            <v-icon>mdi-triangle</v-icon>
+            <v-icon>mdi-triangle</v-icon>-->
         </v-system-bar>
 
         <v-dialog v-model="inviteDialog" width="300">
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Generate invite link</span>
+                        <span class="text-h5">{{ inviteLink ? "Share" : "Generate"}} invite link</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field label="Peer name" v-model="inviteName" required></v-text-field>
+                                    <v-text-field v-if="!inviteLink" label="Peer name" v-model="inviteName" required hint="A short, but unique alias for your friend"></v-text-field>
+                                    <v-card-item v-else>
+                                    <div>
+                                        <div class="text-h6 mb-1">
+                                            Send this link in a trusted channel to your friend
+                                        </div>
+                                            <div class="text-caption">{{ inviteLink }}</div>
+                                        </div>
+                                    </v-card-item>
                                 </v-col>
                                <!-- <v-col cols="12">
                                     <v-text-field label="TODO: Active DID select" v-model="inviteName" required></v-text-field>
@@ -33,11 +44,14 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue-darken-1" variant="text" @click="inviteDialog = false">
+                        <v-btn v-if="!inviteLink" color="blue-darken-1" variant="text" @click="inviteDialog = false">
                             Cancel
                         </v-btn>
-                        <v-btn color="blue-darken-1" variant="text" @click="doInvite">
+                        <v-btn v-if="!inviteLink" color="blue-darken-1" variant="text" @click="doInvite">
                             Generate
+                        </v-btn>
+                        <v-btn v-if="inviteLink" color="blue-darken-1" variant="text" @click="finishInvite">
+                            OK
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -177,6 +191,7 @@
 import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 import { useKiltStore } from '@/store/kilt'
 import { useRTCStore } from '@/store/rtc'
@@ -186,11 +201,12 @@ import Identicon from '@polkadot/vue-identicon'
 
 import Login from "./Login.vue"
 
+const router = useRouter()
+
 const kiltStore = useKiltStore()
 const rtcStore = useRTCStore()
 const gunStore = useGunStore()
 
-const cards = ref(['Today', 'Yesterday'])
 const drawer = ref(null)
 const rail = ref(true)
 const peers = ref(true)
@@ -201,6 +217,7 @@ const incomingInviteDialog = computed(() => incomingInvite.value != null)
 
 const inviteDialog = ref(false)
 const inviteName = ref("")
+const inviteLink = ref(null)
 
 const message = ref("")
 
@@ -212,23 +229,32 @@ const invite = function(){
 
 const selectedPeer = ref(null)
 
+const finishInvite = function(){
+    inviteLink.value = null
+    inviteDialog.value = false
+}
+
 const doInvite = async function(){
     const room = self.crypto.randomUUID()
     const {oobPeerDID, inviteurl } = await kiltStore.createInviteLink(room)
     console.log("INVITE: " + inviteurl)
-    console.log(oobPeerDID.uri)
+    //console.log(oobPeerDID.uri)
 
     gunStore.saveInviteRoom(inviteName.value, room, kiltStore.activeDid.fullDid, oobPeerDID.uri)
     //rtcStore.initInviteRoom(inviteName.value, room, kiltStore.rotateDidMessage)
 
+    inviteLink.value = inviteurl
 }
 
 const acceptInvite = async function(){
     const {did, room} = await kiltStore.connectPeer(incomingInvite.value)
     //rtcStore.respondInviteRoom(inviteName.value, room, kiltStore.generateInviteAcceptMessage, kiltStore.receivedDidRotate)
-    gunStore.saveInviteRoom(inviteName.value, room, kiltStore.activeDid.fullDid, did.did.uri, did.peer.uri)
+    await gunStore.saveInviteRoom(inviteName.value, room, kiltStore.activeDid.fullDid, did.did.uri, did.peer.uri)
 
     inviteName.value = ""
+    router.replace({ path: '/comm' })
+    incomingInvite.value = null
+
 }
 
 const sendMessage = async function(event){

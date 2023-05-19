@@ -51,7 +51,7 @@
                                     <v-text-field v-model="loginName" label="Login" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field label="Password" v-model="password" required></v-text-field>
+                                    <v-text-field label="Password" v-model="password" type="password" required></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -128,10 +128,10 @@
 <script setup>
 import { useGunStore } from '@/store/gun'
 import { ref } from 'vue'
-//import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const gunStore = useGunStore()
-//const router = useRouter()
+const router = useRouter()
 
 const loginDialog = ref(false)
 const registerDialog = ref(false)
@@ -173,7 +173,7 @@ const doRegister = function () {
     }
     registerDialog.value = false
     resetForm()
-    
+    router.replace({ path: '/' })
 }
 
 const cancelRegister = function () {

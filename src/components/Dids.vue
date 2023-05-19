@@ -5,6 +5,9 @@
         </template>
         <template v-else>
         <v-container>
+            <v-btn fab color="primary" :to="{path: '/'}">
+                <v-icon>mdi-menu</v-icon>
+            </v-btn>
             <v-dialog v-model="createDialog" width="300">
                 <v-card>
                     <v-card-title>
@@ -31,7 +34,26 @@
                 </v-card>
             </v-dialog>
 
+            
             <v-row justify="center" align="center">
+                <v-col cols="6" md="4" lg="3" v-if="!kiltStore.activeDid">
+                    <v-card class="mx-auto" variant="outlined">
+                        <v-card-item>
+                            <div>
+                                <div class="text-h6 mb-1">
+                                    Create a light DID
+                                </div>
+                                <div class="text-caption">Create a new Kilt DID</div>
+                            </div>
+                        </v-card-item>
+
+                        <v-card-actions>
+                            <v-btn variant="outlined" @click="createDialog = true">
+                                Create
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-col>
                 <v-col v-for="did in kiltStore.getDids()" :key="did.did.address" cols="6" md="4" lg="3">
                     <v-card class="mx-auto" variant="outlined">
                         <v-card-item>
@@ -47,16 +69,16 @@
                         </v-card-item>
 
                         <v-card-actions>
-                            <v-btn variant="outlined">
+                           <!-- <v-btn variant="outlined">
                                 Button
-                            </v-btn>
+                            </v-btn>-->
                         </v-card-actions>
                     </v-card>
                 </v-col>
             </v-row>
-            <v-btn v-if="kiltStore.getDids()==0" fab color="primary" @click="createDialog = true">
+            <!--<v-btn v-if="kiltStore.getDids()==0" fab color="primary" @click="createDialog = true">
                 <v-icon>mdi-plus</v-icon>
-            </v-btn>
+            </v-btn>-->
         </v-container>
         </template>
     </v-app>
