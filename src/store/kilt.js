@@ -132,7 +132,7 @@ export const useKiltStore = defineStore('kilt', () => {
           {
             id: '#my-service',
             type: ['service-type'],
-            serviceEndpoint: [import.meta.env.VITE_KILT_SERVICE_ENDPOINT],
+            serviceEndpoint: [import.meta.env.VITE_DC_SERVICE_ENDPOINT],
           },
         ],
       },
@@ -276,7 +276,7 @@ export const useKiltStore = defineStore('kilt', () => {
         id: '#dcom',
         type: ['DComInvitationV1'],
         //serviceEndpoint: [`http://localhost/comm/${room}`],
-        serviceEndpoint: [`${import.meta.env.VITE_KILT_SERVICE_ENDPOINT}comm/${room}`],
+        serviceEndpoint: [`${import.meta.env.VITE_DC_SERVICE_ENDPOINT}comm/${room}`],
       },
     ]
 
@@ -323,7 +323,7 @@ export const useKiltStore = defineStore('kilt', () => {
       }
     }
 
-    const inviteurl = `${import.meta.env.VITE_KILT_SERVICE_ENDPOINT}comm?_oob=` + btoa(JSON.stringify(oob_message).replace(/\s/g, ''))
+    const inviteurl = `${import.meta.env.VITE_DC_SERVICE_ENDPOINT}comm?_oob=` + btoa(JSON.stringify(oob_message).replace(/\s/g, ''))
 
     /*const did = {
       did: oobPeerDID,

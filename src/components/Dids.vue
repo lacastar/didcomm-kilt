@@ -43,7 +43,7 @@
                                 <div class="text-h6 mb-1">
                                     Create a light DID
                                 </div>
-                                <div class="text-caption">Create a new Kilt DID</div>
+                                <div class="text-caption">Create a new KILT DID</div>
                             </div>
                         </v-card-item>
 
