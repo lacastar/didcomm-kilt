@@ -148,10 +148,11 @@
                                 <template v-for="msg in kiltStore.chatMap[selectedPeer]" :key="msg.id">
                                     <v-list-item >
                                         <template v-slot:prepend>
-                                            <v-avatar color="grey-darken-1"></v-avatar>
+                                            <v-icon :icon="msg.self?'mdi-send':'mdi-inbox-arrow-down-outline'"></v-icon>
+                                            <!--<v-avatar  color="grey-darken-1"></v-avatar>-->
                                         </template>
 
-                                        <v-list-item-title>{{ msg.body.content }} </v-list-item-title>
+                                        <v-list-item-title :variant="msg.self?'tonal':'plain'">{{ msg.body.content }} </v-list-item-title>
 
                                         <v-list-item-subtitle>
                                             Id# {{ msg.id }}

@@ -884,7 +884,10 @@ export const useKiltStore = defineStore('kilt', () => {
     // add to chatMap
     if(messageIds.value[decryptedMessage.id]) return
     messageIds.value[decryptedMessage.id] = true
-    if (decryptedMessage.body.meta == "self") decryptedMessage.to = chatDidMap.value[room].peer.uri
+    decryptedMessage.self = decryptedMessage.body.meta == "self"
+    if (decryptedMessage.self){
+      decryptedMessage.to = chatDidMap.value[room].peer.uri
+    }
     chatMap.value[room].push(decryptedMessage)
   }
 
