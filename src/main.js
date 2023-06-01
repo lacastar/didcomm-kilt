@@ -50,8 +50,8 @@ const app = createApp(App)
   })*/
 
 registerPlugins(app)
-
-
+console.log(`running in mode: ${import.meta.env.MODE}`)
+console.log(`KILT endpoint: ${import.meta.env.VITE_KILT_WSS_ADDRESS}` )
 await window.kilt.connect(import.meta.env.VITE_KILT_WSS_ADDRESS)
 const api = window.kilt.ConfigService.get('api')
   
