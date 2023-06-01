@@ -35,7 +35,12 @@
                                     KILT Account
                                 </div>
                                 <div class="text-caption">{{kiltStore.account?.address}}<br>
-                                    {{kiltStore.accountMnemonic }}
+                                    <template v-if="showMnemonic">
+                                        <v-icon icon="mdi-eye" @click="showMnemonic = false"/><br>{{kiltStore.accountMnemonic }}
+                                    </template>
+                                    <template v-else>
+                                        <v-icon icon="mdi-eye" @click="showMnemonic = true"/>
+                                    </template>
                                 </div>
                             </div>
                         </v-card-item>
@@ -57,12 +62,17 @@
 import { useKiltStore } from '@/store/kilt'
 import Login from "./Login.vue"
 import { useAppStore } from '@/store/app'
+import { ref } from "vue"
+
+const showMnemonic = ref(false)
 
 const appStore = useAppStore()
 const kiltStore = useKiltStore()
 
+
 const createAccount = function(){
     kiltStore.generateAccount()
 }
+
 
 </script>
