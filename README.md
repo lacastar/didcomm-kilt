@@ -11,6 +11,14 @@ So once a light DID is created it can be used to generate invite links for frien
 
 # Please do not try it in production yet, it is just not there yet. Right now it is a tech demo.
 
+# Known bugs and shortcomings
+
+* during did rotation from_prior header field JWT is not set (jose is there, but there was no time to set it up correctly)
+* many "busieness" validations are missing (protocol type field, etc), but the right formats and encryptions are enforced
+* pending invites are duplicated, tripled or worse... it is due to GUN's streaming. can be fixed easily
+* the didcomm library chokes on the service field of the DID document, so it must be patched before pack and unpack
+* code and UX quality is on par with a dumpster fire, I am sorry about that... last minute rewriting of the communication layer took it's toll
+
 # Running
 
 ## clone from Github
