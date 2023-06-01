@@ -17,6 +17,32 @@
             <v-icon>mdi-triangle</v-icon>-->
         </v-system-bar>
 
+        <v-dialog v-model="msgInfoDialog" >
+                <v-card>
+                    <v-card-title>
+                        <span class="text-h8">{{selectedMessage.decryptedMessage.id}} in {{selectedPeer}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-card-item>
+                                        <span>decrypted message:</span><br><pre class="text-caption">{{ JSON.stringify(selectedMessage.decryptedMessage,null,2) }}</pre>
+                                        <span>unpacked metadata:</span><br><pre class="text-caption">{{ JSON.stringify(selectedMessage.unpackedMetadata,null,2) }}</pre>
+                                    </v-card-item>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue-darken-1" variant="text" @click="msgInfoDialog=false">
+                            OK
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+        </v-dialog>
+
         <v-dialog v-model="inviteDialog" width="300">
                 <v-card>
                     <v-card-title>
@@ -169,9 +195,12 @@
                                         <v-list-item-title :variant="msg.decryptedMessage.self?'tonal':'plain'">{{ msg.decryptedMessage.body.content }} </v-list-item-title>
 
                                         <v-list-item-subtitle>
-                                            Id# {{ msg.decryptedMessage.id }}
+                                            Id# {{ msg.decryptedMessage.id }} 
                                         </v-list-item-subtitle>
-                                        <v-tooltip activator="parent" location="start">{{JSON.stringify(msg)}}</v-tooltip>
+                                        <template v-slot:append>
+                                            <v-icon icon="mdi-information-outline" @click="showInfo(msg)" ></v-icon>
+                                        </template>
+                                        <!--<v-tooltip activator="parent" location="start">{{JSON.stringify(msg)}}</v-tooltip>-->
                                     </v-list-item>
 
                                     <v-divider inset></v-divider>
@@ -221,6 +250,8 @@ const inviteLink = ref(null)
 
 const message = ref("")
 
+const msgInfoDialog = ref(false)
+const selectedMessage = ref(null)
 
 const invite = function(){
     inviteName.value = ""
@@ -265,6 +296,11 @@ const sendMessage = async function(event){
     gunStore.sendMessage(selectedPeer.value, JSON.stringify(encryptedMsg))
     gunStore.sendMessage(selectedPeer.value, JSON.stringify(encryptedMsgSelf))
     message.value = ""
+}
+
+const showInfo = function (msg){
+    msgInfoDialog.value =true
+    selectedMessage.value = msg
 }
 
 onMounted(async () => {
