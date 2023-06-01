@@ -204,7 +204,7 @@ export const useKiltStore = defineStore('kilt', () => {
     //dids.value.push(did)
     didMap.value[did.fullDid] = {
       did,
-      invites: [],
+      invites: {},
       peers: []
     }
     gun.saveDid(name, mnemonic)
@@ -256,7 +256,7 @@ export const useKiltStore = defineStore('kilt', () => {
     //dids.value.push(did)
     didMap.value[did.fullDid] = {
       did,
-      invites: [],
+      invites: {},
       peers: []
     }
     //console.log(`didMap: ${JSON.stringify(didMap.value)}`)
@@ -333,7 +333,7 @@ export const useKiltStore = defineStore('kilt', () => {
     }*/
     //inviteDidMap.value[room] = did
     peerDidMap.value[room] = did
-    didMap.value[activeDid.value.fullDid].invites.push(did)
+    //didMap.value[activeDid.value.fullDid].invites.push(did)
 
     return { oobPeerDID, inviteurl }
 
@@ -406,7 +406,8 @@ export const useKiltStore = defineStore('kilt', () => {
     }
     //inviteDidMap.value[room] = did
     peerDidMap.value[room] = did
-    didMap.value[parentDid].invites.push(did)
+
+    didMap.value[parentDid].invites[peerdiduri]=did
     //console.log("inserted: " + room + " as " + JSON.stringify(did))
   }
 
@@ -415,7 +416,7 @@ export const useKiltStore = defineStore('kilt', () => {
     return Object.values(didMap.value)
   }
 
-  const inviteList = computed(() => didMap.value[activeDid.value.fullDid].invites)
+  const inviteList = computed(() => Object.values(didMap.value[activeDid.value.fullDid].invites))
   const peerList = computed(() => Object.entries(chatDidMap.value))
 
   function verifyOOB(oob) {
