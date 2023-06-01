@@ -889,7 +889,18 @@ export const useKiltStore = defineStore('kilt', () => {
     if (decryptedMessage.self){
       decryptedMessage.to = chatDidMap.value[room].peer.uri
     }
-    chatMap.value[room].push(decryptedMessage)
+    //console.log(JSON.stringify({decryptedMessage,unpackedMetadata}))
+    if(chatMap.value[room].length==0){
+      chatMap.value[room].push({decryptedMessage,unpackedMetadata} )
+    }else{
+      for(let i=0; i < chatMap.value[room].length;i++){
+        if(chatMap.value[room][i].created_time < decryptedMessage.created_time){
+          chatMap.value[room].splice(i,0,{decryptedMessage,unpackedMetadata} )
+          break
+        }
+      }
+    }
+    
   }
 
   async function generateMsg(room, msg){

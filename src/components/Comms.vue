@@ -159,17 +159,17 @@
 
                             <v-list lines="two">
                                 <v-list-subheader>Room# {{selectedPeer}} </v-list-subheader>
-                                <template v-for="msg in kiltStore.chatMap[selectedPeer]" :key="msg.id">
+                                <template v-for="msg in kiltStore.chatMap[selectedPeer]" :key="msg.decryptedMessage.id">
                                     <v-list-item >
                                         <template v-slot:prepend>
-                                            <v-icon :icon="msg.self?'mdi-send':'mdi-inbox-arrow-down-outline'"></v-icon>
+                                            <v-icon :icon="msg.decryptedMessage.self?'mdi-send':'mdi-inbox-arrow-down-outline'"></v-icon>
                                             <!--<v-avatar  color="grey-darken-1"></v-avatar>-->
                                         </template>
 
-                                        <v-list-item-title :variant="msg.self?'tonal':'plain'">{{ msg.body.content }} </v-list-item-title>
+                                        <v-list-item-title :variant="msg.decryptedMessage.self?'tonal':'plain'">{{ msg.decryptedMessage.body.content }} </v-list-item-title>
 
                                         <v-list-item-subtitle>
-                                            Id# {{ msg.id }}
+                                            Id# {{ msg.decryptedMessage.id }}
                                         </v-list-item-subtitle>
                                         <v-tooltip activator="parent" location="start">{{JSON.stringify(msg)}}</v-tooltip>
                                     </v-list-item>
