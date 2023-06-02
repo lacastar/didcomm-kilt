@@ -150,7 +150,8 @@
                         </template>
                     </v-list-item>
                     <template v-if="peers">
-                        <v-list-item v-for="[room, did] in kiltStore.peerList" :key="room" link @click="selectedPeer = room"
+                        <v-list-item v-for="[room, did] in kiltStore.peerList" :key="room" link 
+                            @click="selectRoom(room)"
                             :variant="selectedPeer == room ? 'tonal' : 'plain'">
 
 
@@ -212,13 +213,13 @@
                                 append-icon="mdi-send"></v-text-field>
                         </v-col>
                     </v-row>
-                    <v-row v-if="selectedPeer && kiltStore.chatMap[selectedPeer].length > 0">
+                    <v-row v-if="selectedPeer && kiltStore.chatForRoom.length > 0">
                         <v-col cols="12">
                             <v-card>
 
                                 <v-list lines="two">
                                     <v-list-subheader>Room# {{ selectedPeer }} </v-list-subheader>
-                                    <template v-for="msg in kiltStore.chatMap[selectedPeer]" :key="msg.decryptedMessage.id">
+                                    <template  v-for="msg in kiltStore.chatForRoom" :key="msg.decryptedMessage.id">
                                         <v-list-item>
                                             <template v-slot:prepend>
                                                 <v-icon
@@ -254,8 +255,10 @@
 
 import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
-import { useRoute } from 'vue-router';
+import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
+
+import { storeToRefs } from "pinia"
 
 import { useKiltStore } from '@/store/kilt'
 import { useRTCStore } from '@/store/rtc'
@@ -269,6 +272,7 @@ import Login from "./Login.vue"
 const router = useRouter()
 
 const kiltStore = useKiltStore()
+const { chatForRoom } = storeToRefs(kiltStore)
 const rtcStore = useRTCStore()
 const gunStore = useGunStore()
 
@@ -301,6 +305,10 @@ const selectedPeer = ref(null)
 const finishInvite = function () {
     inviteLink.value = null
     inviteDialog.value = false
+}
+const selectRoom = function (room){
+    selectedPeer.value = room
+    kiltStore.selectChatRoom(room)
 }
 
 const showInvite = async function(invite){

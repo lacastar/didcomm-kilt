@@ -1,6 +1,6 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { inject } from 'vue'
 import { computed } from 'vue'
 
@@ -16,7 +16,7 @@ import { Message } from "didcomm"
 
 import { useGunStore } from './gun'
 
-import * as jose from 'jose'
+//import * as jose from 'jose'
 
 class DIDResolver {
   constructor(knownDids, kilt) {
@@ -425,6 +425,7 @@ export const useKiltStore = defineStore('kilt', () => {
     Object.entries(chatDidMap.value).forEach((key,value) => ret[value.named]=true)
     return ret
   })
+  
 
   function verifyOOB(oob) {
     const inv = JSON.parse(atob(oob))
@@ -855,11 +856,12 @@ export const useKiltStore = defineStore('kilt', () => {
       parentDid,
       state,
     }
-    chatDidMap.value[room] = did
-    chatMap.value[room]=[]
+    if(!chatDidMap.value[room]) chatDidMap.value[room] = did
+    //chatMap.value[room]=[]
+    if(!chatMap.value[room]) chatMap.value[room]=[]
   }
   async function onMsg(room, msg){
-    console.log("INCOMING: " + room + " " + msg)
+    //console.log("INCOMING: " + room + " " + msg)
     // decrypt
     const message = JSON.parse(msg)
     if(message["recipients"][0].header.kid!=chatDidMap.value[room].jwkenc.id) return
@@ -896,19 +898,50 @@ export const useKiltStore = defineStore('kilt', () => {
     if (decryptedMessage.self){
       decryptedMessage.to = chatDidMap.value[room].peer.uri
     }
-    //console.log(JSON.stringify({decryptedMessage,unpackedMetadata}))
+    
+    //chatMap.value[room].push({decryptedMessage,unpackedMetadata} )
+    console.log("pushed: " + room + " " + decryptedMessage.id)
     if(chatMap.value[room].length==0){
       chatMap.value[room].push({decryptedMessage,unpackedMetadata} )
     }else{
       for(let i=0; i < chatMap.value[room].length;i++){
-        if(chatMap.value[room][i].created_time < decryptedMessage.created_time){
-          chatMap.value[room].splice(i,0,{decryptedMessage,unpackedMetadata} )
+        chatMap.value[room].splice(i,0,{decryptedMessage,unpackedMetadata} )
+        break
+
+        /*if(chatMap.value[room][i].created_time < decryptedMessage.created_time){
+          let temp = chatMap.value[room][i]
+          chatMap.value[room][i] = {decryptedMessage,unpackedMetadata}
+          i++
+          while(i < chatMap.value[room].length){
+            let t = chatMap.value[room][i]
+            chatMap.value[room][i] = temp
+            temp = t
+            i++ 
+          }
+          chatMap.value[room].push(temp)
           break
-        }
+        }*/
       }
     }
     
   }
+  const selectedChatroom = ref(null)
+  
+  function selectChatRoom(room){
+    console.log("selectChatForRoom " + room)
+    
+    selectedChatroom.value=room
+  }
+
+  const chatForRoom = computed(() => {
+    console.log("chatForRoom")
+    if(selectedChatroom.value==null || chatMap.value[selectedChatroom.value]==null){
+      console.log("empty room")
+      return []
+    } 
+    console.log("return elements: " + chatMap.value[selectedChatroom.value].length)
+    return chatMap.value[selectedChatroom.value] 
+  })
 
   async function generateMsg(room, msg){
     // generate message
@@ -1000,6 +1033,8 @@ export const useKiltStore = defineStore('kilt', () => {
     regenerateChatDid,
     peerList,
     chatMap,
+    chatForRoom,
+    selectChatRoom,
     onMsg,
     generateMsg,
     names,

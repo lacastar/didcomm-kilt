@@ -95,7 +95,7 @@ export const useGunStore = defineStore('gun', () => {
               })
 
               user.get("chat").map().on(async function(chat){
-                console.log("chats from gun: " + JSON.stringify(chat))
+                //console.log("chats from gun: " + JSON.stringify(chat))
                 if(chat){
                     const named = await SEA.decrypt(chat.n, secret.value)
                     const room = await SEA.decrypt(chat.r, secret.value)
