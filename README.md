@@ -19,6 +19,9 @@ So once a light DID is created it can be used to generate invite links for frien
 * the didcomm library chokes on the service field of the DID document, so it must be patched before pack and unpack
 * code and UX quality is on par with a dumpster fire, I am sorry about that... last minute rewriting of the communication layer took it's toll
 
+# Live demo
+Is available at [https://didcomm-kilt.vercel.app/](https://github.com/lacastar/didcomm-kilt/edit/main/README.md)
+
 # Running
 
 ## clone from Github
