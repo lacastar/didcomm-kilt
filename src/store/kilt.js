@@ -403,6 +403,7 @@ export const useKiltStore = defineStore('kilt', () => {
       },
       parentDid,
       state,
+      room,
     }
     //inviteDidMap.value[room] = did
     peerDidMap.value[room] = did
@@ -418,6 +419,12 @@ export const useKiltStore = defineStore('kilt', () => {
 
   const inviteList = computed(() => Object.values(didMap.value[activeDid.value.fullDid].invites))
   const peerList = computed(() => Object.entries(chatDidMap.value))
+  const names = computed(() => {
+    const ret = {}
+    Object.values(didMap.value[activeDid.value.fullDid].invites).forEach(item => ret[item.name]=true)
+    Object.entries(chatDidMap.value).forEach((key,value) => ret[value.named]=true)
+    return ret
+  })
 
   function verifyOOB(oob) {
     const inv = JSON.parse(atob(oob))
@@ -995,5 +1002,6 @@ export const useKiltStore = defineStore('kilt', () => {
     chatMap,
     onMsg,
     generateMsg,
+    names,
   }
 })
